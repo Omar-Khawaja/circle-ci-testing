@@ -37,6 +37,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: build binary
+          command: go build -o main
+      - run:
           name: Install awscli
           command: sudo pip install awscli
       - run:
