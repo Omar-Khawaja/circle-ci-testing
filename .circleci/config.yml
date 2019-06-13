@@ -1,60 +1,36 @@
 version: 2
 jobs:
-  one:
-    docker:
-      - image: circleci/golang:1.12
-    steps:
-      - checkout
-      - run: echo "A first hello"
-      - run: mkdir -p my_workspace
-      - run: echo "Trying out workspaces" > my_workspace/echo-output
-      - persist_to_workspace:
-          root: my_workspace
-          paths:
-            - echo-output
-  two:
-    docker:
-      - image: circleci/golang:1.12
-    steps:
-      - checkout
-      - run: echo "Adding workspace functionality"
-      - attach_workspace:
-          at: my_workspace
-      - run: |
-          if [[ $(cat my_workspace/echo-output) == "Trying out workspaces" ]]; then echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
   app_test:
     docker:
      - image: circleci/golang:1.12
     steps:
       - checkout
       - run: go test ./...
-  build_and_deploy:
+  build:
     docker:
-     - image: golang:1.12.6-stretch
+     - image: circleci/golang:1.12
     steps:
       - checkout
-      - run:
-          name: build binary
-          command: go build -o main
-      - run:
-          name: Install awscli
-          command: easy_install pip && pip install awscli
-      - run:
-          name: Deploy to S3
-          command: aws s3 cp main s3://omar-circleci-builds
-
+      - run: mkdir -p my_workspace
+      - run: go build -o my_workspace/main
+      - persist_to_workspace:
+          root: my_workspace
+          paths:
+            - main
+  deploy:
+    docker:
+     - image: circleci/python:2.7-jessie
+    steps:
+      - checkout
+      - attach_workspace:
+          at: my_workspace
+      - run: |
+            sudo pip install awscli
+            aws s3 cp my_workspace/main s3://omar-circleci-build
 workflows:
   version: 2
   learn_test_deploy:
     jobs:
-      - one
-      - two:
-          requires:
-            - one
       - app_test
-      - build_and_deploy:
-          requires:
-            - app_test
+      - build
+      - deploy
