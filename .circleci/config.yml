@@ -41,7 +41,7 @@ jobs:
           command: go build -o main
       - run:
           name: Install awscli
-          command: sudo easy_install pip && sudo pip install awscli
+          command: easy_install pip && pip install awscli
       - run:
           name: Deploy to S3
           command: aws s3 cp main s3://omar-circleci-builds
