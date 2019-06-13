@@ -21,12 +21,11 @@ jobs:
     docker:
      - image: circleci/python:2.7-jessie
     steps:
-      - checkout
       - attach_workspace:
           at: my_workspace
-      - run: |
-            sudo pip install awscli
-            aws s3 cp my_workspace/main s3://omar-circleci-build
+      - run:
+          name: install AWS CLI
+          command: sudo pip install awscli
 workflows:
   version: 2
   learn_test_deploy:
