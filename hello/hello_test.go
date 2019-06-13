@@ -1,14 +1,14 @@
 package hello
 
 import (
-    "testing"
+	"testing"
 )
 
 func TestHello(t *testing.T) {
-    got := Hello("Omar")
-    want := "Hello, Omar!"
+	got := Hello("Omar")
+	want := "Hello, Omar!"
 
-    if got != want {
-        t.Errorf("got '%s', wanted '%s'", got, want)
-    }
+	if got != want {
+		t.Errorf("got '%s', wanted '%s'", got, want)
+	}
 }
