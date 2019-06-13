@@ -28,7 +28,7 @@ jobs:
           command: sudo pip install awscli
       - run:
           name: Deploy
-          command: touch testfile.txt && aws s3 cp testfile.txt s3://omar-circleci-buil
+          command: touch testfile.txt && aws s3 cp testfile.txt s3://omar-circleci-builds
 workflows:
   version: 2
   learn_test_deploy:
